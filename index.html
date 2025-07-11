@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    #game-container {
+      width: 320px;
+      height: 480px;
+      border: 2px solid #000;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #bird {
+      width: 40px;
+      height: 40px;
+      background-color: #f00;
+      position: absolute;
+    }
+
+    .pipe {
+      width: 60px;
+      height: 300px;
+      background-color: #0f0;
+      position: absolute;
+    }
+
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Permainan Flappy Bird Nokia Jadul</h1>
+  <p>Klik untuk mengendalikan burung.</p>
+  <div id="game-container">
+    <div id="bird"></div>
+    <div class="pipe" style="left: 160px; height: 200px;"></div>
+    <div class="pipe" style="left: 240px; height: 250px;"></div>
+  </div>
+  <p id="score">Skor: 0</p>
+
+  <script>
+    const bird = document.getElementById('bird');
+    const gameContainer = document.getElementById('game-container');
+    const pipes = document.querySelectorAll('.pipe');
+    const scoreDisplay = document.getElementById('score');
+    let birdTop = 220;
+    let gravity = 2;
+    let score = 0;
+
+    function jump() {
+      birdTop -= 40;
+    }
+
+    function updateGame() {
+      if (birdTop < 0) birdTop = 0;
+      if (birdTop > 440) birdTop = 440;
+
+      bird.style.top = birdTop + 'px';
+
+      pipes.forEach(pipe => {
+        const pipeLeft = parseInt(pipe.style.left);
+
+        if (pipeLeft < -60) {
+          pipe.style.left = '320px';
+          pipe.style.height = Math.floor(Math.random() * 300) + 100 + 'px';
+        }
+
+        pipe.style.left = pipeLeft - 5 + 'px';
+
+        if (
+          pipeLeft < 100 &&
+          pipeLeft > 20 &&
+          birdTop < pipe.style.height - 40
+        ) {
+          alert('Game Over. Skor Anda: ' + score);
+          location.reload();
+        }
+
+        if (pipeLeft === 20) {
+          score++;
+          scoreDisplay.innerText = 'Skor: ' + score;
+        }
+      });
+
+      birdTop += gravity;
+      requestAnimationFrame(updateGame);
+    }
+
+    gameContainer.addEventListener('click', jump);
+
+    updateGame();
+  </script>
+</body>
+</html>
